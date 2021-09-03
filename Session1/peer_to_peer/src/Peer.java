@@ -22,4 +22,9 @@ public class Peer
 
     server.registerPeer(name, id);
   }
+
+  public void sendMessage()
+  {
+
+  }
 }
