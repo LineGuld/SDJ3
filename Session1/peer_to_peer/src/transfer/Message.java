@@ -1,3 +1,5 @@
+package transfer;
+
 public class Message
 {
   private String message;
