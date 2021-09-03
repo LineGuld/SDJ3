@@ -1,31 +1,65 @@
+import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 
 public class AddressServerImpl implements AddressServer
 {
 
-  private static HashMap<String, Integer> registry;
+  private static HashMap<String, Integer> peerRegistry;
 
   private AddressServerImpl()
   {
-    this.registry = new HashMap<>();
+    try
+    {
+      UnicastRemoteObject.exportObject(this, 1099);
+    }
+    catch (RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    this.peerRegistry = new HashMap<>();
   }
 
-  public static HashMap<String, Integer> getInstance(){
-    if (registry == null)
+  public static HashMap<String, Integer> getInstance()
+  {
+    if (peerRegistry == null)
     {
-      registry = new HashMap<>();
+      peerRegistry = new HashMap<>();
     }
-    return registry;
+    return peerRegistry;
+  }
+
+  public void startServer()
+  {
+    Registry registry = null;
+    try
+    {
+      registry = LocateRegistry.createRegistry(1099);
+    }
+    catch (RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    try
+    {
+      registry.bind("addressServer", this);
+    }
+    catch (RemoteException | AlreadyBoundException e)
+    {
+      e.printStackTrace();
+    }
   }
 
   @Override public void registerPeer(String name, int id) throws RemoteException
   {
-      registry.put(name, id);
+    peerRegistry.put(name, id);
   }
 
   @Override public int findPeer(String name) throws RemoteException
   {
-    return registry.get(name);
+    return peerRegistry.get(name);
   }
 }
