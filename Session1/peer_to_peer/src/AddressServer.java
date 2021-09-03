@@ -3,6 +3,6 @@ import java.rmi.RemoteException;
 
 public interface AddressServer extends Remote
 {
-  void registerPeer() throws RemoteException;
-  int findPeer() throws RemoteException;
+  void registerPeer(String name, int id) throws RemoteException;
+  int findPeer(String name) throws RemoteException;
 }

@@ -4,15 +4,28 @@ import java.util.HashMap;
 public class AddressServerImpl implements AddressServer
 {
 
-  private HashMap registry;
+  private static HashMap<String, Integer> registry;
 
-  @Override public void registerPeer() throws RemoteException
+  private AddressServerImpl()
   {
-
+    this.registry = new HashMap<>();
   }
 
-  @Override public int findPeer() throws RemoteException
+  public static HashMap<String, Integer> getInstance(){
+    if (registry == null)
+    {
+      registry = new HashMap<>();
+    }
+    return registry;
+  }
+
+  @Override public void registerPeer(String name, int id) throws RemoteException
   {
-    return 0;
+      registry.put(name, id);
+  }
+
+  @Override public int findPeer(String name) throws RemoteException
+  {
+    return registry.get(name);
   }
 }
